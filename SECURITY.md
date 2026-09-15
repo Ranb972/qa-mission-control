@@ -42,5 +42,5 @@ Install the committed lockfile with `npm ci`. CI checks high-severity dependency
 advisories alongside product verification. A clean audit is a point-in-time
 check, not a guarantee against undiscovered issues.
 
-An application license has not yet been selected. Publication remains pending
-that decision. Bundled third-party notices remain applicable to their assets.
+QA Mission Control is licensed under the [MIT License](LICENSE).
+Bundled third-party notices remain applicable to their assets.

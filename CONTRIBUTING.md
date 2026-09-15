@@ -17,5 +17,5 @@ For UX changes, inspect populated desktop and mobile states as well as automated
 assertions. Describe the problem, behavior change and verification in your PR.
 Do not infer that a passing schema or matched quote proves semantic correctness.
 
-The application license is pending. Agree on contribution terms with the owner
-before submitting substantial contributions. Vendor licenses remain preserved.
+QA Mission Control is distributed under the [MIT License](LICENSE).
+Preserve application and third-party license notices when contributing.

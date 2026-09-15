@@ -103,6 +103,8 @@ Local-first, single-browser workspace; no hosted
 accounts, multi-user collaboration or automatic test execution. Large restores
 can take around two minutes. Scans, diagrams and OCR need human review.
 
-**Application license pending:** an application license has not yet been selected.
-Publication remains pending that decision. Vendor license notices apply to bundled
-third-party assets and do not license this application.
+## License
+
+Licensed under the [MIT License](LICENSE).
+Copyright (c) 2026 [Ranb972](https://github.com/Ranb972).
+Dependencies and bundled assets retain their own [third-party notices](THIRD_PARTY_NOTICES.md).
