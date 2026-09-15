@@ -26,7 +26,8 @@ async function openScan(page: Page) {
   await page.getByRole('button', { name: 'New QA Source', exact: true }).click()
   const form = page.getByRole('form', { name: 'Create QA Source form' })
   await form.getByLabel('Import .txt, .md, .docx, or .pdf file').setInputFiles({ name: 'session-scan.pdf', mimeType: 'application/pdf', buffer })
-  await expect(form.getByLabel('Source content')).toHaveValue(/no selectable text/)
+  // Import progress also mentions "source content"; target the editable field explicitly.
+  await expect(form.getByRole('textbox', { name: 'Source content', exact: true })).toHaveValue(/no selectable text/)
   await form.getByText('Scanned & visual page review · 1 remaining', { exact: true }).click()
   await form.getByRole('button', { name: 'Open page preview', exact: true }).click()
   await expect(form.getByRole('img', { name: /Original PDF page 1/ })).toBeVisible()
@@ -68,7 +69,7 @@ test('scan-only PDF uses one real local OCR call where supported, retains visual
     await page.screenshot({ path: test.info().outputPath(`ocr-page-review-${width}.png`) })
   }
   await form.getByRole('button', { name: 'Apply reviewed page to source' }).click()
-  await expect(form.getByLabel('Source content')).toHaveValue(/תרשים התחברות/)
+  await expect(form.getByRole('textbox', { name: 'Source content', exact: true })).toHaveValue(/תרשים התחברות/)
   await expect(form.getByText('Scanned & visual page review · 1 remaining', { exact: true })).toBeVisible()
   await form.getByRole('button', { name: 'Create QA Source', exact: true }).click()
   await page.reload()
@@ -107,8 +108,8 @@ test('canceling late OCR cannot overwrite newer source text or call the provider
   await form.getByRole('button', { name: 'Recognize this page' }).click(); await called
   await form.getByRole('button', { name: 'Cancel page operation' }).click()
   await expect(form.getByLabel('Reviewed page transcript')).toHaveValue('Reviewed draft before cancellation')
-  await form.getByLabel('Source content').fill('NEW MANUALLY EDITED SOURCE')
+  await form.getByRole('textbox', { name: 'Source content', exact: true }).fill('NEW MANUALLY EDITED SOURCE')
   await page.waitForTimeout(400)
-  await expect(form.getByLabel('Source content')).toHaveValue('NEW MANUALLY EDITED SOURCE')
+  await expect(form.getByRole('textbox', { name: 'Source content', exact: true })).toHaveValue('NEW MANUALLY EDITED SOURCE')
   await expect(form.locator('.pdf-page-review')).toHaveCount(0)
 })
