@@ -1,0 +1,43 @@
+/* Editorial Intelligence: paper, ink, source anchors and explicit judgment. */
+:root {
+  --page-bg: #f8f6f0;
+  --surface: #fffefa;
+  --surface-strong: #fffefa;
+  --surface-muted: #efede5;
+  --surface-document: #fffefa;
+  --border: #d1cdc3;
+  --border-strong: #999187;
+  --border-control: #82796d;
+  --text: #393630;
+  --text-muted: #645e54;
+  --heading: #211f1b;
+  --brand: #97392d;
+  --brand-hover: #72291f;
+  --brand-soft: #f7eae3;
+  --ink: #211f1b;
+  --ink-secondary: #393630;
+  --ink-muted: #d1cdc3;
+  --evidence: #84372c;
+  --evidence-soft: #f7eee7;
+  --positive: #276044;
+  --positive-soft: #edf3e9;
+  --warning: #7b5219;
+  --warning-soft: #fbf0d7;
+  --critical: #9b1733;
+  --critical-soft: #fbe9ee;
+  --shadow: none;
+  --radius-sm: 2px;
+  --radius-panel: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --font-mono: 'Cascadia Code', Consolas, 'Liberation Mono', monospace;
+  --font-document: Georgia, 'Times New Roman', serif;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text);
+}

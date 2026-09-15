@@ -1,0 +1,7 @@
+* text=auto
+*.png binary
+*.pdf binary
+*.docx binary
+*.woff2 binary
+# The supplied canonical Markdown uses two-space hard line breaks.
+demo-source-candidate/northstar-commerce-platform-v3.2-spec.md whitespace=-blank-at-eol

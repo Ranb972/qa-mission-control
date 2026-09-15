@@ -1,0 +1,29 @@
+# Dependencies and generated output
+node_modules/
+dist/
+dist-ssr/
+playwright-report/
+test-results/
+logs/
+*.log
+*.local
+*.tsbuildinfo
+
+# Local configuration and data
+.env
+.env.*
+!.env.example
+.vercel/
+.local/
+private/
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

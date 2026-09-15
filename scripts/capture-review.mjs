@@ -1,0 +1,78 @@
+// Repeatable rendered evidence for the isolated, synthetic local review workspace.
+import { chromium } from '@playwright/test'
+import { mkdir, writeFile } from 'node:fs/promises'
+import { resolve } from 'node:path'
+
+const baseURL = process.argv[2] || 'http://127.0.0.1:5182'
+const output = resolve(process.argv[3])
+const width = Number(process.argv[4] || 1440)
+await mkdir(output, { recursive: true })
+const browser = await chromium.launch({ headless: true })
+const page = await browser.newPage({ viewport: { width, height: 1000 }, locale: 'en-US', reducedMotion: 'reduce' })
+const errors = []
+const requests = []
+page.on('pageerror', (error) => errors.push(error.message))
+page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()) })
+page.on('request', (request) => { if (request.url().includes('/api/ai/')) requests.push({ url: request.url(), method: request.method() }) })
+await page.goto(baseURL)
+await page.getByRole('heading', { name: 'Operational snapshot' }).waitFor()
+const build = await (await page.request.get(baseURL + '/__review/build')).json()
+const checks = []
+async function top() { await page.evaluate(() => { window.scrollTo(0, 0); const main = document.querySelector('main'); if (main) main.scrollTop = 0 }) }
+async function capture(name, reset = true) {
+  if (reset) await top()
+  await page.screenshot({ path: resolve(output, name + '.png'), animations: 'disabled' })
+  checks.push({ screen: name, viewport: await page.evaluate(() => window.innerWidth), overflow: await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth || (document.querySelector('main')?.scrollWidth ?? 0) > (document.querySelector('main')?.clientWidth ?? 0) + 1) })
+  console.log('Captured ' + name)
+}
+async function navigate(name) {
+  const menu = page.getByRole('button', { name: 'Menu', exact: true })
+  const button = page.getByRole('button', { name: new RegExp('^' + name + '\\b') }).first()
+  if (!(await button.isVisible()) && await menu.isVisible()) await menu.click()
+  await button.click()
+}
+await capture('01-shell-dashboard')
+await navigate('QA Sources')
+await capture('02-sources')
+const source = page.getByRole('article', { name: 'Checkout & payments', exact: true })
+await source.locator('summary').filter({ hasText: 'Source Structure' }).click()
+await source.locator('.source-structure-panel').scrollIntoViewIfNeeded()
+await capture('03-source-structure', false)
+await source.getByRole('radio', { name: /2\. Payment authorization/ }).check()
+await source.getByRole('heading', { name: 'Current section analysis' }).scrollIntoViewIfNeeded()
+await capture('04-section-analysis', false)
+await source.getByRole('button', { name: 'Open AI coverage workspace' }).click()
+await page.getByRole('button', { name: 'Select area', exact: true }).first().click()
+await capture('05-global-coverage')
+await page.getByRole('button', { name: 'Generate tests for selected area', exact: true }).click()
+await page.getByLabel(/Generated area suggestion result/).waitFor({ timeout: 10000 })
+await page.locator('.coverage-review-inbox').getByRole('button', { name: 'Review details', exact: true }).first().click()
+await page.locator('.coverage-review-inbox').evaluate((element) => element.scrollIntoView({ block: 'start' }))
+await capture('06-ai-suggestions', false)
+await navigate('QA Sources')
+await source.locator('summary').filter({ hasText: 'Source Structure' }).click()
+await source.getByRole('button', { name: 'Select analyses to merge' }).click()
+await source.getByRole('checkbox', { name: /2\. Payment authorization/ }).check()
+await source.getByRole('checkbox', { name: /3\. Payment recovery/ }).check()
+await source.getByRole('button', { name: 'Build global coverage plan' }).scrollIntoViewIfNeeded()
+await capture('07-merge-selection', false)
+await source.getByRole('button', { name: 'Build global coverage plan' }).click()
+await page.getByRole('heading', { name: /Global Coverage Plan candidate/i }).waitFor({ timeout: 10000 })
+await capture('08-merge-candidate')
+await navigate('Test Cases')
+await capture('09-test-cases')
+await page.getByRole('article').first().getByRole('button', { name: 'Expand', exact: true }).click()
+await capture('10-test-case-detail')
+await navigate('Bugs')
+await capture('11-bugs')
+await navigate('Risks')
+await capture('12-risks')
+await navigate('Test Suites')
+await capture('13-suites')
+await navigate('Executions')
+await capture('14-execution')
+await navigate('Release Report')
+await capture('15-report')
+await writeFile(resolve(output, 'verification.json'), JSON.stringify({ build, width, checks, errors, requests }, null, 2))
+console.log(JSON.stringify({ build, checks, errors, requests }, null, 2))
+await browser.close()
